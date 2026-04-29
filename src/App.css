@@ -1,7 +1,24 @@
-body{
-  background-color: #1F1B1B;
+.navbar {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(15, 15, 15, 0.8);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-h1{
+.logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 2px;
   color: #fff;
+}
+
+.logo span {
+  color: var(--primary-color);
+}
+
+.App {
+  min-height: 100vh;
 }
