@@ -15,7 +15,9 @@
   margin-bottom: 1rem;
   background: linear-gradient(to right, #fff, var(--primary-color));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .services-header .subtitle {

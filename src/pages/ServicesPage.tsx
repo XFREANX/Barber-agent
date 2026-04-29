@@ -12,8 +12,13 @@ interface Service {
   image?: string;
 }
 
-const ServicesPage: React.FC = () => {
+interface ServicesPageProps {
+  onBook: (data: any) => void;
+}
+
+const ServicesPage: React.FC<ServicesPageProps> = ({ onBook }) => {
   const [services, setServices] = useState<Service[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,9 +65,14 @@ const ServicesPage: React.FC = () => {
       <div className="services-grid">
         {services.length > 0 ? (
           services.map(service => (
-            <ServiceCard key={service._id} service={service} />
+            <ServiceCard 
+              key={service._id} 
+              service={service} 
+              onBook={() => onBook({ serviceId: service._id, serviceName: service.name })} 
+            />
           ))
         ) : (
+
           <p className="no-services">No services found. Add some in the backend!</p>
         )}
       </div>

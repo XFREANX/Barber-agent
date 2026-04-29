@@ -10,9 +10,10 @@ interface ServiceProps {
     duration: number;
     image?: string;
   };
+  onBook: () => void;
 }
 
-const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
+const ServiceCard: React.FC<ServiceProps> = ({ service, onBook }) => {
   return (
     <div className="service-card">
       <div className="service-image-container">
@@ -31,11 +32,12 @@ const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             {service.duration} min
           </span>
-          <button className="book-btn">Book Now</button>
+          <button className="book-btn" onClick={onBook}>Book Now</button>
         </div>
       </div>
     </div>
   );
 };
+
 
 export default ServiceCard;
