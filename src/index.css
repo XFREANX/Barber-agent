@@ -8,8 +8,16 @@
   --accent-color: #c5a028;
   --error-color: #ff4d4d;
   --success-color: #4caf50;
-  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-main: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Google Sans', 'Montserrat', sans-serif;
 }
+
+h1, h2, h3, h4, .logo {
+  font-family: var(--font-heading);
+}
+
+
+
 
 * {
   margin: 0;

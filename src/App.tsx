@@ -4,13 +4,14 @@ import './App.css'
 import ServicesPage from './pages/ServicesPage'
 import BarbersPage from './pages/BarbersPage'
 import BookingModal from './components/BookingModal'
+import type { BookingInitialData } from './types/index'
 
 function App() {
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [bookingData, setBookingData] = useState<any>(null);
+  const [bookingData, setBookingData] = useState<BookingInitialData | undefined>(undefined);
 
-  const openBooking = (data: any) => {
+  const openBooking = (data: BookingInitialData) => {
     setBookingData(data);
     setIsModalOpen(true);
   };
@@ -36,7 +37,10 @@ function App() {
 
       <BookingModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        onClose={() => {
+          setIsModalOpen(false);
+          setBookingData(undefined);
+        }} 
         initialData={bookingData}
       />
     </div>

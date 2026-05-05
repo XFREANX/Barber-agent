@@ -1,14 +1,8 @@
-import React from 'react';
+import type { Barber } from '../types/index';
 import './BarberCard.css';
 
 interface BarberProps {
-  barber: {
-    _id: string;
-    name: string;
-    bio: string;
-    image: string;
-    specialties?: any[];
-  };
+  barber: Barber;
   onBook: () => void;
 }
 

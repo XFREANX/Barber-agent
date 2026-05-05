@@ -1,7 +1,31 @@
-const API_URL = 'http://localhost:5000/api';
+import type { Service, Barber, Appointment, BookingFormData } from '../types/index';
+import { ApiError } from '../types/index';
 
-// MOCK DATA para visualización inmediata
-const MOCK_SERVICES = [
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// ─── Helper: request normalizado ────────────────────────────────────────────
+
+async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+
+  const body = await response.json();
+
+  if (!response.ok) {
+    throw new ApiError(
+      body.error || `Request failed: ${response.statusText}`,
+      response.status
+    );
+  }
+
+  return body.data as T;
+}
+
+// ─── MOCK DATA (fallback cuando el backend no está disponible) ──────────────
+
+const MOCK_SERVICES: Service[] = [
   {
     _id: '1',
     name: 'Corte Clásico',
@@ -52,56 +76,62 @@ const MOCK_SERVICES = [
   }
 ];
 
-export const fetchServices = async () => {
-  // Simulamos un retraso de red para ver el loader
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
-  try {
-    const response = await fetch(`${API_URL}/services`);
-    if (!response.ok) throw new Error('Backend not reachable');
-    const data = await response.json();
-    return data.data.length > 0 ? data.data : MOCK_SERVICES;
-  } catch (error) {
-    console.log('Using Mock Data because backend is not available');
-    return MOCK_SERVICES; // Devolvemos los mocks si falla la red
-  }
-};
-
-const MOCK_BARBERS = [
+const MOCK_BARBERS: Barber[] = [
   {
     _id: '1',
     name: 'Marco "The Blade"',
     bio: 'Maestro del degradado perfecto. Más de 10 años esculpiendo los estilos más precisos de la ciudad.',
     image: 'https://images.unsplash.com/photo-1532710093739-9470acff878f?q=80&w=2070&auto=format&fit=crop',
-    specialties: ['Corte Clásico', 'Degradados']
+    specialties: ['Corte Clásico', 'Degradados'],
+    isActive: true
   },
   {
     _id: '2',
     name: 'Sofia Barber',
     bio: 'Especialista en cuidado facial y diseño de barba. Transforma cualquier barba rebelde en una obra de arte.',
     image: 'https://images.unsplash.com/photo-1613483445507-68641178229b?q=80&w=2070&auto=format&fit=crop',
-    specialties: ['Arreglo de Barba', 'Tratamientos Faciales']
+    specialties: ['Arreglo de Barba', 'Tratamientos Faciales'],
+    isActive: true
   },
   {
     _id: '3',
     name: 'Arthur Shelby',
     bio: 'Estilo clásico británico. Especialista en cortes a tijera y afeitados tradicionales con toalla caliente.',
     image: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?q=80&w=2072&auto=format&fit=crop',
-    specialties: ['Cortes a Tijera', 'Afeitado Tradicional']
+    specialties: ['Cortes a Tijera', 'Afeitado Tradicional'],
+    isActive: true
   }
 ];
 
-export const fetchBarbers = async () => {
-  // Simulamos un retraso de red
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
+// ─── Servicios ──────────────────────────────────────────────────────────────
+
+export const fetchServices = async (): Promise<Service[]> => {
   try {
-    const response = await fetch(`${API_URL}/barbers`);
-    if (!response.ok) throw new Error('Backend not reachable');
-    const data = await response.json();
-    return data.data.length > 0 ? data.data : MOCK_BARBERS;
+    const services = await request<Service[]>('/services');
+    return services.length > 0 ? services : MOCK_SERVICES;
   } catch (error) {
-    console.log('Using Mock Data for Barbers because backend is not available');
+    console.warn('[API] fetchServices fallback to mock:', (error as Error).message);
+    return MOCK_SERVICES;
+  }
+};
+
+// ─── Barberos ───────────────────────────────────────────────────────────────
+
+export const fetchBarbers = async (): Promise<Barber[]> => {
+  try {
+    const barbers = await request<Barber[]>('/barbers');
+    return barbers.length > 0 ? barbers : MOCK_BARBERS;
+  } catch (error) {
+    console.warn('[API] fetchBarbers fallback to mock:', (error as Error).message);
     return MOCK_BARBERS;
   }
+};
+
+// ─── Citas ──────────────────────────────────────────────────────────────────
+
+export const createAppointment = async (data: BookingFormData): Promise<Appointment> => {
+  return request<Appointment>('/appointments', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
 };

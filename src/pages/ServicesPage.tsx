@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { fetchServices } from '../services/api';
 import ServiceCard from '../components/ServiceCard';
+import type { Service, BookingInitialData } from '../types/index';
 import './ServicesPage.css';
 
-interface Service {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  duration: number;
-  image?: string;
-}
-
 interface ServicesPageProps {
-  onBook: (data: any) => void;
+  onBook: (data: BookingInitialData) => void;
 }
 
 const ServicesPage: React.FC<ServicesPageProps> = ({ onBook }) => {

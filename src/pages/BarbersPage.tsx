@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { fetchBarbers } from '../services/api';
 import BarberCard from '../components/BarberCard';
+import type { Barber, BookingInitialData } from '../types/index';
 import './BarbersPage.css';
 
-interface Barber {
-  _id: string;
-  name: string;
-  bio: string;
-  image: string;
-  specialties?: any[];
-}
-
 interface BarbersPageProps {
-  onBook: (data: any) => void;
+  onBook: (data: BookingInitialData) => void;
 }
 
 const BarbersPage: React.FC<BarbersPageProps> = ({ onBook }) => {

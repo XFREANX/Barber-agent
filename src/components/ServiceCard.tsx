@@ -1,15 +1,8 @@
-import React from 'react';
+import type { Service } from '../types/index';
 import './ServiceCard.css';
 
 interface ServiceProps {
-  service: {
-    _id: string;
-    name: string;
-    description: string;
-    price: number;
-    duration: number;
-    image?: string;
-  };
+  service: Service;
   onBook: () => void;
 }
 
