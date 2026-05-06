@@ -169,9 +169,15 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, initialDat
   if (success) {
     return (
       <div className="modal-overlay" onClick={handleClose}>
-        <div className="modal-content success-view" onClick={e => e.stopPropagation()}>
+        <div 
+          className="modal-content success-view" 
+          onClick={e => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="success-title"
+        >
           <div className="success-icon">✓</div>
-          <h2>¡Reserva Confirmada!</h2>
+          <h2 id="success-title">¡Reserva Confirmada!</h2>
           <p className="success-message">
             Tu cita ha sido registrada exitosamente. Te enviaremos una confirmación a <strong>{formData.email}</strong>.
           </p>
@@ -192,12 +198,19 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, initialDat
 
   return (
     <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
+      <div 
+        className="modal-content" 
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        aria-describedby="modal-desc"
+      >
         <button className="close-btn" onClick={handleClose} aria-label="Cerrar modal">&times;</button>
         
         <div className="modal-header">
-          <h2>Reserva tu Cita</h2>
-          <p>Selecciona el momento perfecto para tu cambio de look</p>
+          <h2 id="modal-title">Reserva tu Cita</h2>
+          <p id="modal-desc">Selecciona el momento perfecto para tu cambio de look</p>
         </div>
 
         {/* Error global */}

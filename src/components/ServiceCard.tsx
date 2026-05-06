@@ -15,7 +15,7 @@ const ServiceCard: React.FC<ServiceProps> = ({ service, onBook }) => {
           alt={service.name} 
           className="service-image"
         />
-        <div className="service-price">${service.price}</div>
+        <div className="service-price">{service.price}€</div>
       </div>
       <div className="service-info">
         <h3 className="service-name">{service.name}</h3>

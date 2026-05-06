@@ -111,3 +111,35 @@
   font-weight: 600;
   border: 1px solid rgba(212, 175, 55, 0.2);
 }
+
+@media (max-width: 768px) {
+  .barber-overlay {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  }
+  .book-barber-btn {
+    transform: translateY(0);
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+  .barber-image-container {
+    height: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .barber-image-container {
+    height: 200px;
+  }
+  .barber-info {
+    padding: 1.2rem;
+  }
+  .barber-name {
+    font-size: 1.2rem;
+  }
+  .barber-bio {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+}
+

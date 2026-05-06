@@ -3,7 +3,9 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import './App.css'
 import ServicesPage from './pages/ServicesPage'
 import BarbersPage from './pages/BarbersPage'
+import NotFoundPage from './pages/NotFoundPage'
 import BookingModal from './components/BookingModal'
+import Footer from './components/Footer'
 import type { BookingInitialData } from './types/index'
 
 function App() {
@@ -32,8 +34,11 @@ function App() {
         <Routes>
           <Route path="/" element={<ServicesPage onBook={openBooking} />} />
           <Route path="/barbers" element={<BarbersPage onBook={openBooking} />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
+
+      <Footer />
 
       <BookingModal 
         isOpen={isModalOpen} 
@@ -48,6 +53,3 @@ function App() {
 }
 
 export default App
-
-
-

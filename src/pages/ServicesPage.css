@@ -77,3 +77,33 @@
   font-style: italic;
   font-size: 1.1rem;
 }
+
+@media (max-width: 768px) {
+  .services-page {
+    padding: 2.5rem 0;
+  }
+  .services-header {
+    margin-bottom: 2.5rem;
+  }
+  .services-header .title {
+    font-size: 2.2rem;
+  }
+  .services-header .subtitle {
+    font-size: 1rem;
+  }
+  .services-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-header .title {
+    font-size: 1.8rem;
+  }
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

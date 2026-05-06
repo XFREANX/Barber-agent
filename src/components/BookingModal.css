@@ -238,13 +238,48 @@
 
 /* ─── Responsive ───────────────────────────────────────────────────────── */
 
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 2.5rem;
+    max-height: 95vh;
+  }
+  .modal-header h2 {
+    font-size: 1.8rem;
+  }
+}
+
 @media (max-width: 600px) {
   .form-row {
     grid-template-columns: 1fr;
     gap: 0;
   }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 10px;
+  }
   .modal-content {
-    padding: 2rem;
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+  .modal-header {
+    margin-bottom: 1.5rem;
+  }
+  .modal-header h2 {
+    font-size: 1.5rem;
+  }
+  .form-section {
+    margin-bottom: 1.5rem;
+  }
+  .form-section h3 {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  .submit-booking-btn {
+    padding: 12px;
+    font-size: 1rem;
   }
 }
+
 
