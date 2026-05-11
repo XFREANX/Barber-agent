@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { BookingInitialData, BookingFormData, Barber } from '../types/index';
 import { fetchBarbers, createAppointment } from '../services/api';
+import { formatDate, getTodayISO } from '../utils/formatters';
 import './BookingModal.css';
 
 // ─── Sanitización defensiva ─────────────────────────────────────────────────
@@ -163,7 +164,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, initialDat
   // No renderizar si el modal está cerrado
   if (!isOpen) return null;
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = getTodayISO();
 
   // BM4.6 — Pantalla de confirmación exitosa
   if (success) {
@@ -182,7 +183,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, initialDat
             Tu cita ha sido registrada exitosamente. Te enviaremos una confirmación a <strong>{formData.email}</strong>.
           </p>
           <div className="success-details">
-            <p><strong>Fecha:</strong> {formData.date}</p>
+            <p><strong>Fecha:</strong> {formatDate(formData.date)}</p>
             <p><strong>Hora:</strong> {formData.time}</p>
             {initialData?.serviceName && (
               <p><strong>Servicio:</strong> {initialData.serviceName}</p>

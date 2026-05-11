@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { fetchServices } from '../services/api';
+import React from 'react';
+import { useServices } from '../hooks/useServices';
 import ServiceCard from '../components/ServiceCard';
-import type { Service, BookingInitialData } from '../types/index';
+import type { BookingInitialData } from '../types/index';
 import './ServicesPage.css';
 
 interface ServicesPageProps {
@@ -9,25 +9,7 @@ interface ServicesPageProps {
 }
 
 const ServicesPage: React.FC<ServicesPageProps> = ({ onBook }) => {
-  const [services, setServices] = useState<Service[]>([]);
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadServices = async () => {
-      try {
-        const data = await fetchServices();
-        setServices(data);
-      } catch (err) {
-        setError('Failed to load services. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadServices();
-  }, []);
+  const { services, loading, error } = useServices();
 
   if (loading) {
     return (

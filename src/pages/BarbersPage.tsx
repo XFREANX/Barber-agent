@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { fetchBarbers } from '../services/api';
+import React from 'react';
+import { useBarbers } from '../hooks/useBarbers';
 import BarberCard from '../components/BarberCard';
-import type { Barber, BookingInitialData } from '../types/index';
+import type { BookingInitialData } from '../types/index';
 import './BarbersPage.css';
 
 interface BarbersPageProps {
@@ -9,25 +9,7 @@ interface BarbersPageProps {
 }
 
 const BarbersPage: React.FC<BarbersPageProps> = ({ onBook }) => {
-  const [barbers, setBarbers] = useState<Barber[]>([]);
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadBarbers = async () => {
-      try {
-        const data = await fetchBarbers();
-        setBarbers(data);
-      } catch (err) {
-        setError('Failed to load barbers. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBarbers();
-  }, []);
+  const { barbers, loading, error } = useBarbers();
 
   if (loading) {
     return (

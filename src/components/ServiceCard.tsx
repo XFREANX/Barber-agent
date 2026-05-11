@@ -1,4 +1,5 @@
 import type { Service } from '../types/index';
+import { formatPrice, formatDuration } from '../utils/formatters';
 import './ServiceCard.css';
 
 interface ServiceProps {
@@ -15,7 +16,7 @@ const ServiceCard: React.FC<ServiceProps> = ({ service, onBook }) => {
           alt={service.name} 
           className="service-image"
         />
-        <div className="service-price">{service.price}€</div>
+        <div className="service-price">{formatPrice(service.price)}</div>
       </div>
       <div className="service-info">
         <h3 className="service-name">{service.name}</h3>
@@ -23,7 +24,7 @@ const ServiceCard: React.FC<ServiceProps> = ({ service, onBook }) => {
         <div className="service-footer">
           <span className="service-duration">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            {service.duration} min
+            {formatDuration(service.duration)}
           </span>
           <button className="book-btn" onClick={onBook}>Book Now</button>
         </div>
