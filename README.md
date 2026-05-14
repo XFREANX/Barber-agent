@@ -37,51 +37,6 @@ barber-app/
 │   └── package.json
 └── README.md
 ```
-
----
-
-## ⚙️ Requisitos Previos
-
-- [Node.js](https://nodejs.org/) v18 o superior
-- [MongoDB](https://www.mongodb.com/) corriendo en `localhost:27017` (o una URI de Atlas)
-- npm (incluido con Node.js)
-
----
-
-## 🚀 Instalación
-
-### 1. Clonar el repositorio
-
-```bash
-git clone <url-del-repositorio>
-cd barber-app
-```
-
-### 2. Instalar dependencias del cliente
-
-```bash
-cd client
-npm install
-```
-
-### 3. Instalar dependencias del servidor
-
-```bash
-cd ../server
-npm install
-```
-
-### 4. Configurar variables de entorno
-
-Crea o edita el archivo `server/.env`:
-
-```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/barber-app
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-```
-
 ---
 
 ## ▶️ Ejecución en Desarrollo
@@ -146,11 +101,3 @@ npm run seed
 | Bundler    | Vite 8                            |
 | Seguridad  | bcryptjs, CORS restringido        |
 
----
-
-## 📝 Notas
-
-- Las contraseñas se almacenan hasheadas con `bcryptjs`.
-- CORS está configurado para aceptar solo orígenes autorizados.
-- El frontend incluye datos mock como fallback si el backend no está disponible.
-- La app está diseñada como monorepo simple sin herramientas de workspace.
