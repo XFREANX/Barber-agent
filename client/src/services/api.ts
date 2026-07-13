@@ -1,4 +1,4 @@
-import type { Service, Barber, Appointment, BookingFormData } from '../types/index';
+import type { Service, Barber, Appointment, BookingFormData, LoginData, RegisterData, AuthResponse, User } from '../types/index';
 import { ApiError } from '../types/index';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -134,4 +134,63 @@ export const createAppointment = async (data: BookingFormData): Promise<Appointm
     method: 'POST',
     body: JSON.stringify(data),
   });
+};
+
+// ─── Auth ───────────────────────────────────────────────────────────────────
+
+async function authRequest<T>(endpoint: string, token: string): Promise<T> {
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  const body = await response.json();
+
+  if (!response.ok) {
+    throw new ApiError(
+      body.error || `Request failed: ${response.statusText}`,
+      response.status
+    );
+  }
+
+  return body as T;
+}
+
+export const loginUser = async (data: LoginData): Promise<AuthResponse> => {
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  const body = await response.json();
+
+  if (!response.ok) {
+    throw new ApiError(body.error || 'Login failed', response.status);
+  }
+
+  return body as AuthResponse;
+};
+
+export const registerUser = async (data: RegisterData): Promise<AuthResponse> => {
+  const response = await fetch(`${API_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  const body = await response.json();
+
+  if (!response.ok) {
+    throw new ApiError(body.error || 'Registration failed', response.status);
+  }
+
+  return body as AuthResponse;
+};
+
+export const fetchCurrentUser = async (token: string): Promise<User> => {
+  const result = await authRequest<{ success: boolean; data: User }>('/auth/me', token);
+  return result.data;
 };

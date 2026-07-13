@@ -22,10 +22,31 @@ export interface Barber {
 
 export interface User {
   _id: string;
+  publicId?: string;
   name: string;
   email: string;
   phone?: string;
   role: 'customer' | 'admin';
+}
+
+// ─── Auth Types ─────────────────────────────────────────────────────────────
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  data: User;
+  token: string;
 }
 
 export interface Appointment {

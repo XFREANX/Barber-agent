@@ -13,14 +13,32 @@ const authRoutes = require('./routes/authRoutes');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
 
 const app = express();
 
-// 1. Security HTTP Headers (Should be First)
-app.use(helmet());
+// 1. CORS config (MUST be before helmet to set Access-Control headers first)
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
-// 2. Rate Limiting Setup
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
+
+// 2. Security HTTP Headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
+
+// 3. Rate Limiting Setup
 // Stricter rate limit for auth endpoints (anti brute-force)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -43,27 +61,17 @@ const apiLimiter = rateLimit({
 app.use('/api/auth/', authLimiter); 
 app.use('/api/', apiLimiter);
 
-// 3. Body parsers and sanitizers
+// 4. Body parsers and sanitizers
 app.use(express.json());
-app.use(mongoSanitize()); // Prevent NoSQL query injection
-app.use(xss());           // Prevent XSS attacks
 
-// 4. CORS config
-const allowedOrigins = [
-  'http://localhost:5173',
-  process.env.CLIENT_URL,
-].filter(Boolean);
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true,
-}));
+// Manual sanitization for Express 5 compatibility
+// (express-mongo-sanitize and xss-clean try to set req.query which is read-only in Express 5)
+app.use((req, _res, next) => {
+  if (req.body) {
+    req.body = mongoSanitize.sanitize(req.body);
+  }
+  next();
+});
 
 // 5. Routes
 app.use('/api/auth', authRoutes);

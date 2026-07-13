@@ -59,18 +59,207 @@
   min-height: 100vh;
 }
 
-/* Responsividad para móviles y tablets */
+/* ─── Navbar Auth Section ─────────────────────────────────────────────────── */
+
+.nav-auth {
+  display: flex;
+  align-items: center;
+}
+
+.nav-auth-skeleton {
+  width: 80px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.nav-login-btn {
+  padding: 0.55rem 1.4rem;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #b8941f 100%);
+  color: #0f0f0f;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 24px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+}
+
+.nav-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+  color: #0f0f0f;
+}
+
+/* ─── User Menu ───────────────────────────────────────────────────────────── */
+
+.user-menu-wrapper {
+  position: relative;
+}
+
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.8rem 0.35rem 0.35rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.user-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #b8941f 100%);
+  color: #0f0f0f;
+  font-size: 0.85rem;
+  font-weight: 800;
+  border-radius: 50%;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+/* ─── User Dropdown ───────────────────────────────────────────────────────── */
+
+.user-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  animation: dropdownIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  overflow: hidden;
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdown-header {
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.dropdown-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.dropdown-email {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.8rem 1.1rem;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-item.logout-item {
+  color: var(--error-color);
+}
+
+.dropdown-item.logout-item:hover {
+  background: rgba(255, 77, 77, 0.08);
+}
+
+/* ─── Responsividad para móviles y tablets ─────────────────────────────────── */
+
 @media (max-width: 768px) {
   .navbar {
     padding: 1rem 0;
   }
   .nav-container {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
   }
   .nav-links {
     gap: 1.5rem;
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+  .nav-auth {
+    order: 2;
+  }
+  .user-name {
+    display: none;
   }
 }
 
