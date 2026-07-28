@@ -2,18 +2,18 @@ const Barber = require('../models/Barber');
 
 // @desc    Get all barbers
 // @route   GET /api/barbers
-exports.getBarbers = async (req, res) => {
+exports.getBarbers = async (req, res, next) => {
   try {
     const barbers = await Barber.find().populate('specialties');
     res.status(200).json({ success: true, count: barbers.length, data: barbers });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 };
 
 // @desc    Get single barber
 // @route   GET /api/barbers/:id
-exports.getBarber = async (req, res) => {
+exports.getBarber = async (req, res, next) => {
   try {
     const barber = await Barber.findById(req.params.id).populate('specialties');
     if (!barber) {
@@ -21,26 +21,36 @@ exports.getBarber = async (req, res) => {
     }
     res.status(200).json({ success: true, data: barber });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 };
 
 // @desc    Create new barber
 // @route   POST /api/barbers
-exports.createBarber = async (req, res) => {
+exports.createBarber = async (req, res, next) => {
   try {
-    const barber = await Barber.create(req.body);
+    const { name, bio, image, specialties, isActive } = req.body;
+    const barber = await Barber.create({ name, bio, image, specialties, isActive });
     res.status(201).json({ success: true, data: barber });
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
+    next(error);
   }
 };
 
 // @desc    Update barber
 // @route   PUT /api/barbers/:id
-exports.updateBarber = async (req, res) => {
+exports.updateBarber = async (req, res, next) => {
   try {
-    const barber = await Barber.findByIdAndUpdate(req.params.id, req.body, {
+    const ALLOWED_UPDATES = ['name', 'bio', 'image', 'specialties', 'isActive'];
+    const updates = {};
+
+    Object.keys(req.body).forEach((key) => {
+      if (ALLOWED_UPDATES.includes(key)) {
+        updates[key] = req.body[key];
+      }
+    });
+
+    const barber = await Barber.findByIdAndUpdate(req.params.id, updates, {
       new: true,
       runValidators: true,
     });
@@ -49,13 +59,13 @@ exports.updateBarber = async (req, res) => {
     }
     res.status(200).json({ success: true, data: barber });
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
+    next(error);
   }
 };
 
 // @desc    Delete barber
 // @route   DELETE /api/barbers/:id
-exports.deleteBarber = async (req, res) => {
+exports.deleteBarber = async (req, res, next) => {
   try {
     const barber = await Barber.findByIdAndDelete(req.params.id);
     if (!barber) {
@@ -63,6 +73,7 @@ exports.deleteBarber = async (req, res) => {
     }
     res.status(200).json({ success: true, data: {} });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 };
+

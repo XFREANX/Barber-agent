@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import type { User, LoginData, RegisterData } from '../types/index';
-import { loginUser, registerUser, fetchCurrentUser } from '../services/api';
+import type { User, LoginData, RegisterData, UpdateProfileData } from '../types/index';
+import { loginUser, registerUser, fetchCurrentUser, updateProfile } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -10,6 +10,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (data: LoginData) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
+  updateUser: (data: UpdateProfileData) => Promise<void>;
   logout: () => void;
 }
 
@@ -62,6 +63,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(response.data);
   }, []);
 
+  const updateUser = useCallback(async (data: UpdateProfileData) => {
+    const currentToken = localStorage.getItem(TOKEN_KEY);
+    if (!currentToken) {
+      throw new Error('No authentication token found');
+    }
+    const updatedUser = await updateProfile(currentToken, data);
+    setUser(updatedUser);
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
@@ -77,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         register,
+        updateUser,
         logout,
       }}
     >
@@ -92,3 +103,4 @@ export function useAuth(): AuthContextType {
   }
   return context;
 }
+

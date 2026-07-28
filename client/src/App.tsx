@@ -6,6 +6,7 @@ import BarbersPage from './pages/BarbersPage'
 import NotFoundPage from './pages/NotFoundPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import ProfilePage from './pages/ProfilePage'
 import BookingModal from './components/BookingModal'
 import Footer from './components/Footer'
 import { useAuth } from './context/AuthContext'
@@ -55,6 +56,14 @@ function App() {
                         <span className="dropdown-email">{user.email}</span>
                       </div>
                       <div className="dropdown-divider" />
+                      <Link
+                        to="/profile"
+                        className="dropdown-item profile-item"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        👤 Mi Perfil
+                      </Link>
+                      <div className="dropdown-divider" />
                       <button
                         className="dropdown-item logout-item"
                         onClick={() => {
@@ -83,6 +92,7 @@ function App() {
           <Route path="/barbers" element={<BarbersPage onBook={openBooking} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
@@ -102,3 +112,4 @@ function App() {
 }
 
 export default App
+

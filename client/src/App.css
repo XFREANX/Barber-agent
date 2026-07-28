@@ -230,6 +230,11 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+.dropdown-item.profile-item:hover {
+  color: var(--primary-color);
+}
+
+
 .dropdown-item.logout-item {
   color: var(--error-color);
 }

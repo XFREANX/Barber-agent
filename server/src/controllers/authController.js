@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { logSecurityEvent } = require('../utils/logger');
 
 // Helper: generate JWT token
 const generateToken = (id) => {
@@ -11,30 +12,14 @@ const generateToken = (id) => {
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   try {
     const { name, email, password, phone } = req.body;
 
-    // Validate required fields exist
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        error: 'Registration failed. Please ensure all mandatory fields are completed.',
-      });
-    }
-
-    // Enforce strict password policy (e.g., length, non-whitespace)
-    if (password.trim().length < 6) {
-      return res.status(400).json({
-        success: false,
-        error: 'Registration failed. Password must contain at least 6 non-space characters.',
-      });
-    }
-
-    // Check if user already exists - use generic response to prevent enumeration
     const normalizedEmail = email.toLowerCase().trim();
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
+      logSecurityEvent('REGISTER_FAILED_DUPLICATE_EMAIL', { email: normalizedEmail, ip: req.ip });
       return res.status(400).json({
         success: false,
         error: 'Registration failed. Please check your credentials and try again.',
@@ -53,10 +38,11 @@ exports.register = async (req, res) => {
       phone: phone ? phone.trim() : undefined,
     });
 
+    logSecurityEvent('USER_REGISTERED', { userId: user.publicId, email: normalizedEmail });
+
     // Generate token
     const token = generateToken(user._id);
 
-    // Return user data WITHOUT password and WITHOUT internal _id
     res.status(201).json({
       success: true,
       data: {
@@ -69,29 +55,21 @@ exports.register = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(400).json({ success: false, error: 'Registration failed. Invalid request format.' });
+    next(error);
   }
 };
 
 // @desc    Login user & get token
 // @route   POST /api/auth/login
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Validate required fields
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        error: 'Please provide email and password',
-      });
-    }
-
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Find user and include password for comparison
     const user = await User.findOne({ email: normalizedEmail }).select('+password');
     if (!user) {
+      logSecurityEvent('LOGIN_FAILED_INVALID_USER', { email: normalizedEmail, ip: req.ip });
       return res.status(401).json({
         success: false,
         error: 'Invalid credentials',
@@ -101,11 +79,14 @@ exports.login = async (req, res) => {
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      logSecurityEvent('LOGIN_FAILED_WRONG_PASSWORD', { email: normalizedEmail, ip: req.ip });
       return res.status(401).json({
         success: false,
         error: 'Invalid credentials',
       });
     }
+
+    logSecurityEvent('USER_LOGGED_IN', { userId: user.publicId, email: normalizedEmail });
 
     // Generate token
     const token = generateToken(user._id);
@@ -122,16 +103,59 @@ exports.login = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: 'Server error' });
+    next(error);
   }
 };
 
 // @desc    Get current logged-in user
 // @route   GET /api/auth/me
 exports.getMe = async (req, res) => {
-  // req.user is set by the protect middleware
+  // Return safe representation without MongoDB _id or __v
   res.status(200).json({
     success: true,
-    data: req.user,
+    data: {
+      publicId: req.user.publicId,
+      name: req.user.name,
+      email: req.user.email,
+      phone: req.user.phone,
+      role: req.user.role,
+    },
   });
 };
+
+// @desc    Update current logged-in user profile
+// @route   PUT /api/auth/profile
+exports.updateProfile = async (req, res, next) => {
+  try {
+    const ALLOWED_UPDATES = ['name', 'phone'];
+    const updates = {};
+
+    Object.keys(req.body).forEach((key) => {
+      if (ALLOWED_UPDATES.includes(key)) {
+        updates[key] = req.body[key];
+      }
+    });
+
+    const user = await User.findByIdAndUpdate(req.user._id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    logSecurityEvent('USER_PROFILE_UPDATED', { userId: user.publicId });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        publicId: user.publicId,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+

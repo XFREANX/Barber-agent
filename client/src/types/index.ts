@@ -43,6 +43,12 @@ export interface RegisterData {
   phone?: string;
 }
 
+export interface UpdateProfileData {
+  name?: string;
+  phone?: string;
+}
+
+
 export interface AuthResponse {
   success: boolean;
   data: User;

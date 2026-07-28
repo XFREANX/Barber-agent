@@ -1,4 +1,5 @@
-import type { Service, Barber, Appointment, BookingFormData, LoginData, RegisterData, AuthResponse, User } from '../types/index';
+import type { Service, Barber, Appointment, BookingFormData, LoginData, RegisterData, UpdateProfileData, AuthResponse, User } from '../types/index';
+
 import { ApiError } from '../types/index';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -14,6 +15,9 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const body = await response.json();
 
   if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('barber_app_token');
+    }
     throw new ApiError(
       body.error || `Request failed: ${response.statusText}`,
       response.status
@@ -22,6 +26,7 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 
   return body.data as T;
 }
+
 
 // ─── MOCK DATA (fallback cuando el backend no está disponible) ──────────────
 
@@ -194,3 +199,26 @@ export const fetchCurrentUser = async (token: string): Promise<User> => {
   const result = await authRequest<{ success: boolean; data: User }>('/auth/me', token);
   return result.data;
 };
+
+export const updateProfile = async (token: string, data: UpdateProfileData): Promise<User> => {
+  const response = await fetch(`${API_URL}/auth/profile`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  const body = await response.json();
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('barber_app_token');
+    }
+    throw new ApiError(body.error || 'Profile update failed', response.status);
+  }
+
+  return body.data as User;
+};
+

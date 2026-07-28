@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { logSecurityEvent } = require('../utils/logger');
 
 // @desc    Protect routes — verifies JWT token
 const protect = async (req, res, next) => {
@@ -11,6 +12,7 @@ const protect = async (req, res, next) => {
   }
 
   if (!token) {
+    logSecurityEvent('UNAUTHORIZED_ACCESS_NO_TOKEN', { path: req.originalUrl, ip: req.ip });
     return res.status(401).json({
       success: false,
       error: 'Not authorized — no token provided',
@@ -25,6 +27,7 @@ const protect = async (req, res, next) => {
     req.user = await User.findById(decoded.id).select('-password');
 
     if (!req.user) {
+      logSecurityEvent('UNAUTHORIZED_ACCESS_USER_DELETED', { userId: decoded.id, ip: req.ip });
       return res.status(401).json({
         success: false,
         error: 'Not authorized — user no longer exists',
@@ -33,6 +36,7 @@ const protect = async (req, res, next) => {
 
     next();
   } catch (error) {
+    logSecurityEvent('UNAUTHORIZED_ACCESS_INVALID_TOKEN', { path: req.originalUrl, ip: req.ip, error: error.message });
     return res.status(401).json({
       success: false,
       error: 'Not authorized — invalid token',
@@ -44,6 +48,13 @@ const protect = async (req, res, next) => {
 const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
+      logSecurityEvent('FORBIDDEN_ROLE_ACCESS', {
+        userId: req.user.publicId,
+        userRole: req.user.role,
+        requiredRoles: roles,
+        path: req.originalUrl,
+        ip: req.ip,
+      });
       return res.status(403).json({
         success: false,
         error: `Role '${req.user.role}' is not authorized to access this resource`,
@@ -54,3 +65,4 @@ const authorize = (...roles) => {
 };
 
 module.exports = { protect, authorize };
+

@@ -2,18 +2,18 @@ const Service = require('../models/Service');
 
 // @desc    Get all services
 // @route   GET /api/services
-exports.getServices = async (req, res) => {
+exports.getServices = async (req, res, next) => {
   try {
     const services = await Service.find();
     res.status(200).json({ success: true, count: services.length, data: services });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 };
 
 // @desc    Get single service
 // @route   GET /api/services/:id
-exports.getService = async (req, res) => {
+exports.getService = async (req, res, next) => {
   try {
     const service = await Service.findById(req.params.id);
     if (!service) {
@@ -21,26 +21,36 @@ exports.getService = async (req, res) => {
     }
     res.status(200).json({ success: true, data: service });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 };
 
 // @desc    Create new service
 // @route   POST /api/services
-exports.createService = async (req, res) => {
+exports.createService = async (req, res, next) => {
   try {
-    const service = await Service.create(req.body);
+    const { name, description, price, duration, image } = req.body;
+    const service = await Service.create({ name, description, price, duration, image });
     res.status(201).json({ success: true, data: service });
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
+    next(error);
   }
 };
 
 // @desc    Update service
 // @route   PUT /api/services/:id
-exports.updateService = async (req, res) => {
+exports.updateService = async (req, res, next) => {
   try {
-    const service = await Service.findByIdAndUpdate(req.params.id, req.body, {
+    const ALLOWED_UPDATES = ['name', 'description', 'price', 'duration', 'image'];
+    const updates = {};
+
+    Object.keys(req.body).forEach((key) => {
+      if (ALLOWED_UPDATES.includes(key)) {
+        updates[key] = req.body[key];
+      }
+    });
+
+    const service = await Service.findByIdAndUpdate(req.params.id, updates, {
       new: true,
       runValidators: true,
     });
@@ -49,13 +59,13 @@ exports.updateService = async (req, res) => {
     }
     res.status(200).json({ success: true, data: service });
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
+    next(error);
   }
 };
 
 // @desc    Delete service
 // @route   DELETE /api/services/:id
-exports.deleteService = async (req, res) => {
+exports.deleteService = async (req, res, next) => {
   try {
     const service = await Service.findByIdAndDelete(req.params.id);
     if (!service) {
@@ -63,6 +73,7 @@ exports.deleteService = async (req, res) => {
     }
     res.status(200).json({ success: true, data: {} });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 };
+
