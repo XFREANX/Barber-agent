@@ -1,5 +1,14 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+
+// Helper to query user by either publicId (UUID) or Mongo ObjectId
+const buildUserQuery = (id) => {
+  if (mongoose.Types.ObjectId.isValid(id)) {
+    return { _id: id };
+  }
+  return { publicId: id };
+};
 
 // @desc    Get all users
 // @route   GET /api/users
@@ -16,7 +25,7 @@ exports.getUsers = async (req, res, next) => {
 // @route   GET /api/users/:id
 exports.getUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).select('-password');
+    const user = await User.findOne(buildUserQuery(req.params.id)).select('-password');
     if (!user) {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
@@ -64,7 +73,7 @@ exports.updateUser = async (req, res, next) => {
       }
     });
 
-    const user = await User.findByIdAndUpdate(req.params.id, updates, {
+    const user = await User.findOneAndUpdate(buildUserQuery(req.params.id), updates, {
       new: true,
       runValidators: true,
     }).select('-password');
@@ -82,7 +91,7 @@ exports.updateUser = async (req, res, next) => {
 // @route   DELETE /api/users/:id
 exports.deleteUser = async (req, res, next) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findOneAndDelete(buildUserQuery(req.params.id));
     if (!user) {
       return res.status(404).json({ success: false, error: 'User not found' });
     }

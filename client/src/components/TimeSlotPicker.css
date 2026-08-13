@@ -1,0 +1,76 @@
+.time-slot-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.slot-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.slot-group-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.time-slot {
+  position: relative;
+  padding: 0.55rem 0.4rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: inherit;
+  text-align: center;
+}
+
+.time-slot:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.time-slot.selected {
+  background: var(--primary-color);
+  color: #000;
+  border-color: var(--primary-color);
+  font-weight: 800;
+}
+
+.time-slot.booked {
+  background: rgba(255, 77, 77, 0.07);
+  border-color: rgba(255, 77, 77, 0.2);
+  color: rgba(255, 255, 255, 0.25);
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.booked-badge {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 0.6rem;
+  color: var(--error-color);
+}
+
+@media (max-width: 400px) {
+  .slot-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

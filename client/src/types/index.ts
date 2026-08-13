@@ -86,6 +86,7 @@ export interface BookingInitialData {
   serviceName?: string;
   barberId?: string;
   barberName?: string;
+  price?: number;
 }
 
 // --- API Response Types ---

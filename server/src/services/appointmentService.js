@@ -1,4 +1,5 @@
 const Appointment = require('../models/Appointment');
+const Service = require('../models/Service');
 
 /**
  * Service to handle appointment business logic
@@ -53,7 +54,15 @@ class AppointmentService {
       throw err;
     }
 
-    // VULN-07 FIX (Layer 2): Application-level conflict check before inserting.
+    // Lookup service to set totalPrice
+    const serviceDoc = await Service.findById(service);
+    if (!serviceDoc) {
+      const err = new Error('Selected service not found');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    // Application-level conflict check before inserting.
     const conflict = await Appointment.findOne({
       barber,
       date: parsedDate,
@@ -76,6 +85,7 @@ class AppointmentService {
       time,
       service,
       barber,
+      totalPrice: serviceDoc.price,
     });
   }
 }

@@ -109,6 +109,10 @@ function LoginPage() {
 
         <div className="auth-footer">
           <p>
+            ¿Olvidaste tu contraseña?{' '}
+            <Link to="/forgot-password">Recupérala aquí</Link>
+          </p>
+          <p>
             ¿No tienes cuenta?{' '}
             <Link to="/register">Regístrate aquí</Link>
           </p>

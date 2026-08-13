@@ -1,0 +1,229 @@
+.review-section {
+  margin-top: 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Summary ───────────────────────────────────────────────────── */
+
+.review-summary {
+  display: flex;
+  justify-content: center;
+}
+
+.avg-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.avg-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.review-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Stars ─────────────────────────────────────────────────────── */
+
+.star-display {
+  display: inline-flex;
+  gap: 1px;
+}
+
+.star-display .star {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.15);
+  transition: color 0.15s;
+}
+
+.star-display .star.lit {
+  color: var(--primary-color);
+}
+
+/* ── Star Input ─────────────────────────────────────────────────── */
+
+.star-input {
+  display: flex;
+  gap: 4px;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.2);
+  transition: color 0.15s, transform 0.1s;
+  padding: 0;
+  line-height: 1;
+}
+
+.star-btn.lit {
+  color: var(--primary-color);
+}
+
+.star-btn:hover {
+  transform: scale(1.15);
+}
+
+/* ── Review List ───────────────────────────────────────────────── */
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.review-list::-webkit-scrollbar { width: 4px; }
+.review-list::-webkit-scrollbar-track { background: transparent; }
+.review-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+.review-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reviewer-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: #000;
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reviewer-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.reviewer-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.review-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.review-comment {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.no-reviews {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* ── Form ──────────────────────────────────────────────────────── */
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.review-form-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.review-textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.88rem;
+  padding: 0.65rem 0.8rem;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.review-error {
+  color: var(--error-color);
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.review-success {
+  color: #4caf50;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.review-submit-btn {
+  align-self: flex-start;
+  padding: 0.55rem 1.4rem;
+  border-radius: 10px;
+  background: var(--primary-color);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.review-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.review-login-prompt {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
+}
+
+.review-login-prompt a {
+  color: var(--primary-color);
+  font-weight: 700;
+}

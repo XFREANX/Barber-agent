@@ -53,10 +53,12 @@ const appointmentSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// VULN-07 FIX (Layer 1): Compound unique index — database-level guard against double-booking.
-// Prevents two appointments for the same barber at the same date+time, even under race conditions.
-// Only active bookings (pending/confirmed) block a slot — cancelled ones free it up via app logic.
-appointmentSchema.index({ barber: 1, date: 1, time: 1 }, { unique: true });
+// Compound index with partial filter — database-level guard against double-booking active appointments.
+// Cancelled or completed slots are excluded from the unique constraint so they can be re-booked.
+appointmentSchema.index(
+  { barber: 1, date: 1, time: 1 },
+  { unique: true, partialFilterExpression: { status: { $in: ['pending', 'confirmed'] } } }
+);
 
 module.exports = mongoose.model('Appointment', appointmentSchema);
 

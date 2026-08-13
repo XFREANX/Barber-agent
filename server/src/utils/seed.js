@@ -1,14 +1,15 @@
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+dotenv.config({ path: path.join(__dirname, '../../.env') });
+
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const connectDB = require('../config/db');
 
 // Models
 const Service = require('../models/Service');
 const Barber = require('../models/Barber');
 const User = require('../models/User');
-
-dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const servicesData = [
   {
@@ -56,10 +57,7 @@ const barbersData = [
 
 const seedDB = async () => {
   try {
-    const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/barber-app';
-    console.log('Conectando a MongoDB:', MONGO_URI);
-    
-    await mongoose.connect(MONGO_URI);
+    await connectDB();
     
     // Clear existing data
     await Service.deleteMany();

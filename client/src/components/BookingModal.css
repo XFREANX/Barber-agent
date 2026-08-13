@@ -282,4 +282,154 @@
   }
 }
 
+/* ── Step Indicator ────────────────────────────────────────────── */
 
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+
+.step-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.85rem;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.step-dot.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #000;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+}
+
+.step-dot.done {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.step-label {
+  position: absolute;
+  top: 36px;
+  white-space: nowrap;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.step-dot.active .step-label { color: var(--primary-color); }
+.step-dot.done .step-label { color: var(--primary-color); }
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.25s ease;
+  max-width: 80px;
+}
+
+.step-line.done { background: var(--primary-color); }
+
+/* ── Booking Step Container ────────────────────────────────────── */
+
+.booking-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ── Step Navigation ───────────────────────────────────────────── */
+
+.step-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.back-btn {
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.back-btn:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+/* ── Booking Summary ───────────────────────────────────────────── */
+
+.booking-summary {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.summary-row strong { color: #fff; font-weight: 600; }
+
+.summary-row.total {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 0.6rem;
+  margin-top: 0.2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.total-price {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+/* ── Payment Note ──────────────────────────────────────────────── */
+
+.payment-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: rgba(255, 165, 0, 0.06);
+  border: 1px solid rgba(255, 165, 0, 0.15);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+}
+
+/* ── Pay Button ────────────────────────────────────────────────── */
+
+.pay-btn {
+  flex: 1;
+}

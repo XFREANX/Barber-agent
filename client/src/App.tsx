@@ -7,6 +7,11 @@ import NotFoundPage from './pages/NotFoundPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ProfilePage from './pages/ProfilePage'
+import MyAppointmentsPage from './pages/MyAppointmentsPage'
+import AdminDashboardPage from './pages/AdminDashboardPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
+import ProtectedRoute from './components/ProtectedRoute'
 import BookingModal from './components/BookingModal'
 import Footer from './components/Footer'
 import { useAuth } from './context/AuthContext'
@@ -32,6 +37,16 @@ function App() {
           <div className="nav-links">
             <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Servicios</Link>
             <Link to="/barbers" className={location.pathname === '/barbers' ? 'active' : ''}>Barberos</Link>
+            {isAuthenticated && (
+              <Link to="/my-appointments" className={location.pathname === '/my-appointments' ? 'active' : ''}>
+                Mis Citas
+              </Link>
+            )}
+            {isAuthenticated && user?.role === 'admin' && (
+              <Link to="/admin" className={location.pathname === '/admin' ? 'active' : ''} style={{ color: 'var(--primary-color)' }}>
+                ⚡ Admin
+              </Link>
+            )}
           </div>
           <div className="nav-auth">
             {isLoading ? (
@@ -63,6 +78,23 @@ function App() {
                       >
                         👤 Mi Perfil
                       </Link>
+                      <Link
+                        to="/my-appointments"
+                        className="dropdown-item profile-item"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        📅 Mis Citas
+                      </Link>
+                      {user.role === 'admin' && (
+                        <Link
+                          to="/admin"
+                          className="dropdown-item profile-item"
+                          style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          ⚡ Panel Admin
+                        </Link>
+                      )}
                       <div className="dropdown-divider" />
                       <button
                         className="dropdown-item logout-item"
@@ -92,7 +124,32 @@ function App() {
           <Route path="/barbers" element={<BarbersPage onBook={openBooking} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-appointments"
+            element={
+              <ProtectedRoute>
+                <MyAppointmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requireAdmin>
+                <AdminDashboardPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

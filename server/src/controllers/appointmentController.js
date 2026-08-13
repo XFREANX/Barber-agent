@@ -21,9 +21,16 @@ exports.getAppointment = async (req, res, next) => {
     const appointment = await Appointment.findById(req.params.id)
       .populate('barber', 'name image')
       .populate('service', 'name price duration');
+
     if (!appointment) {
       return res.status(404).json({ success: false, error: 'Appointment not found' });
     }
+
+    // Security check: Only admins or the appointment owner can view the appointment
+    if (req.user.role !== 'admin' && appointment.clientEmail !== req.user.email) {
+      return res.status(403).json({ success: false, error: 'Not authorized to access this appointment' });
+    }
+
     res.status(200).json({ success: true, data: appointment });
   } catch (error) {
     next(error);
@@ -77,6 +84,42 @@ exports.deleteAppointment = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'Appointment not found' });
     }
     res.status(200).json({ success: true, data: {} });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get user's own appointments
+// @route   GET /api/appointments/my
+exports.getMyAppointments = async (req, res, next) => {
+  try {
+    const appointments = await Appointment.find({ clientEmail: req.user.email })
+      .populate('barber', 'name image')
+      .populate('service', 'name price duration')
+      .sort({ date: -1 });
+    res.status(200).json({ success: true, count: appointments.length, data: appointments });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Cancel appointment (client or admin)
+// @route   PUT /api/appointments/:id/cancel
+exports.cancelAppointment = async (req, res, next) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) {
+      return res.status(404).json({ success: false, error: 'Appointment not found' });
+    }
+
+    if (req.user.role !== 'admin' && appointment.clientEmail !== req.user.email) {
+      return res.status(403).json({ success: false, error: 'Not authorized to cancel this appointment' });
+    }
+
+    appointment.status = 'cancelled';
+    await appointment.save();
+
+    res.status(200).json({ success: true, data: appointment });
   } catch (error) {
     next(error);
   }
